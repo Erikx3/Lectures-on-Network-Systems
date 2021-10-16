@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Own exemptions
+LNS-suggestions-5oct21.txt
+ExistingProgramming/
+Own_suggestion.txt
+*.idea/
