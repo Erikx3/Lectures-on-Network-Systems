@@ -3,7 +3,7 @@ numpy==1.20.3
 matplotlib==3.4.2
 networkx==2.6.3
 scipy==1.7.1
-simpy==4.0.1
+sympy==1.6.2
 ipykernel==6.4.1            
 ipython==7.27.0           
 ipython_genutils==0.2.0            
