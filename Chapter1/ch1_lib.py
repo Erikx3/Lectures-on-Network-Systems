@@ -132,6 +132,7 @@ def create_widgets_play_slider(fnc, minv, maxv, step=1, play_speed=200):
     -------
     widgets
     """
+
     slider = widgets.IntSlider(min=minv, max=maxv, step=step, continuous_update=True)
     play = widgets.Play(min=minv,max=maxv, step=step, interval=play_speed)
 
