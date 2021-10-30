@@ -4,6 +4,20 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import ipywidgets as widgets
 import scipy.linalg as spla
+from math import gcd
+from functools import reduce
+
+
+def is_periodic(G):
+    """
+    https://stackoverflow.com/questions/54030163/periodic-and-aperiodic-directed-graphs
+    Own function to test, whether a given Graph is aperiodic:
+    """
+    cycles = list(nx.algorithms.cycles.simple_cycles(G))
+    cycles_sizes = [len(c) for c in cycles]  # Find all cycle sizes
+    cycles_gcd = reduce(gcd, cycles_sizes)  # Find greatest common divisor of all cycle sizes
+    is_periodic = cycles_gcd > 1
+    return is_periodic
 
 
 def plot_node_val_2D(states, x_0, t, ax, legend=True):
