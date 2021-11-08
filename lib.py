@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import ipywidgets as widgets
 import scipy.linalg as spla
+from matplotlib.colors import ListedColormap
 from math import gcd
 from functools import reduce
 
@@ -20,15 +21,16 @@ def is_periodic(G):
     return is_periodic
 
 
-def plot_node_val_2D(states, x_0, t, ax, legend=True):
+def plot_node_val_2D(states, x_0, t, ax, legend=True, avg=True):
     """
     Function to plot the states on a 2d-axis
     """
     x_axis = np.arange(t)
     for i in range(states.shape[1]):
         ax.plot(x_axis, states[:,i], label=str(i+1))
-    average = np.ones(t) * np.sum(x_0)/states.shape[1]
-    ax.plot(x_axis, average, '--', label='average')
+    if avg:
+        average = np.ones(t) * np.sum(x_0)/states.shape[1]
+        ax.plot(x_axis, average, '--', label='mean(x_0)')
     if legend:
         ax.legend()
 
@@ -230,3 +232,57 @@ def plot_gersgorin_disks(M, ax):
     for i in range(M.shape[0]):
         ax.add_patch(mpl.patches.Circle((M[i, i], 0), radius=row_sums[i] - M[i, i],
                                         alpha=.6 / M.shape[0], ec='green'))
+
+
+def sum_of_powers(M, n):
+    """Returns the sum of the [0,n) powers of M"""
+    result = np.zeros(M.shape)
+    for i in range(n):
+        result += np.linalg.matrix_power(M, i)
+    return result
+
+
+def is_irreducible(M):
+    """Returns whether or not given square, positive matrix is irreducible"""
+    Mk = sum_of_powers(M, M.shape[0])
+    return not np.any(Mk == 0)
+
+
+def is_node_globally_reachable(M, i):
+    """Returns whether or not given node in given square, positive matrix is globally reachable"""
+    power_sum = sum_of_powers(M, M.shape[0])
+    return not np.any(power_sum[:, i] == 0)
+
+
+def is_primitive(M):
+    """
+    Returns whether of not a given square is primitive
+
+    Corollary 8.5.8 in Horn & Johnson, Matrix Analysis:
+    Let A be an n×n non-negative matrix. Then A is primitive if and only if A^(n2−2n+2) has only positive entries.
+    """
+    n = M.shape[0]
+    return not np.any(np.linalg.matrix_power(M, n ** 2 - 2 * n + 2) == 0)
+
+
+def draw_adj_matrix(A, ax):
+    """
+    Draw network based on given adjacency matrix
+    """
+    G = nx.DiGraph()
+    for i in range(len(A)):
+        for j in range(len(A[i])):
+            if (A[i, j]):
+                G.add_edge(i, j)
+    nx.draw_networkx(G, node_size=100, ax=ax, connectionstyle='arc3, rad = 0.1')
+
+
+def plot_matrix_binary(M, ax, name=''):
+    """
+    Drawing binary plot of adjacency matrix
+    """
+    blue_map = ListedColormap(["blue", "white"])
+    zeros = M == 0
+    im = ax.imshow(zeros, cmap=blue_map)
+    ax.set_xticks([])
+    ax.set_yticks([])
