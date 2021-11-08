@@ -208,8 +208,9 @@ def plot_spectrum(M, ax):
     eigvals = spla.eig(M)[0]  # Extract only eigenvalues
 
     ax.scatter(eigvals.real, eigvals.imag)
-    ax.set_xlim(-1.05, 1.05)
-    ax.set_ylim(-1.05, 1.05)
+    if max(abs(eigvals)) < 1:
+        ax.set_xlim(-1.05, 1.05)
+        ax.set_ylim(-1.05, 1.05)
 
     r = max(abs(eigvals))  # Note: abs() automatically calculated the magnitude of complex values
     circle = mpl.patches.Circle((0, 0), radius=r, alpha=.2, ec='black')
