@@ -27,7 +27,7 @@ def plot_node_val_2D(states, x_0, t, ax, legend=True, avg=True):
     """
     x_axis = np.arange(t)
     for i in range(states.shape[1]):
-        ax.plot(x_axis, states[:,i], label=str(i+1))
+        ax.plot(x_axis, states[:,i], label=str(i))
     if avg:
         average = np.ones(t) * np.sum(x_0)/states.shape[1]
         ax.plot(x_axis, average, '--', label='mean(x_0)')
@@ -121,7 +121,10 @@ def update_network(i, G, states_m, ax, vbound, pos, labels=True):
             pos_higher[k] = (v[0] + x_off, v[1] + y_off)
         labels = ["%.4g" % num for num in states_m[i]]  # Casting node value to string
         labels = dict(zip(list(range(0, len(labels))), labels))  # Matching node value to node number in a dict
-        nx.draw_networkx_labels(G, pos_higher, labels, ax=ax)
+        try:
+            nx.draw_networkx_labels(G, pos_higher, labels, ax=ax)
+        except KeyError as e:
+            raise Exception('Make sure ur Nodes are labeled from 0 ... n-1') from e
         # If there is a failure due to key error, it is required for the labels to be numbered from 0 .. n!!
 
 
@@ -219,6 +222,7 @@ def plot_spectrum(M, ax):
     ax.add_patch(circle)
     ax.axhline(0, color='black', ls='--', linewidth=1)
     ax.axvline(0, color='black', ls='--', linewidth=1)
+    ax.axis('equal')
     return eigvals, ax
 
 
