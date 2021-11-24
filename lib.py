@@ -206,7 +206,7 @@ def matprint(mat, fmt="g"):
         print("|")
 
 
-def plot_spectrum(M, ax):
+def plot_spectrum(M, ax, patch=True):
     """
     Scatter plot of eigs in complex plane overlayed by radius circle
     """
@@ -219,23 +219,26 @@ def plot_spectrum(M, ax):
 
     r = max(abs(eigvals))  # Note: abs() automatically calculated the magnitude of complex values
     circle = mpl.patches.Circle((0, 0), radius=r, alpha=.2, ec='black')
-    ax.add_patch(circle)
+    if patch:
+        ax.add_patch(circle)
     ax.axhline(0, color='black', ls='--', linewidth=1)
     ax.axvline(0, color='black', ls='--', linewidth=1)
     ax.axis('equal')
     return eigvals, ax
 
 
-def plot_gersgorin_disks(M, ax):
+def plot_gersgorin_disks(M, ax, patch_spectrum=True):
     """
     Scatter plot of eigenvalues overlayed with gersgorin disks (marked with green edges)
     """
-    eigvals, ax = plot_spectrum(M, ax)
+    eigvals, ax = plot_spectrum(M, ax, patch_spectrum)
 
     row_sums = M.sum(axis=1)
     for i in range(M.shape[0]):
-        ax.add_patch(mpl.patches.Circle((M[i, i], 0), radius=row_sums[i] - M[i, i],
+        radius = row_sums[i] - M[i, i]
+        ax.add_patch(mpl.patches.Circle((M[i, i], 0), radius=radius,
                                         alpha=.6 / M.shape[0], ec='green'))
+    ax.autoscale_view()
 
 
 def sum_of_powers(M, n):
