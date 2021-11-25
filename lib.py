@@ -272,16 +272,27 @@ def is_primitive(M):
     return not np.any(np.linalg.matrix_power(M, n ** 2 - 2 * n + 2) == 0)
 
 
-def draw_adj_matrix(A, ax):
+def create_G_from_adj_matrix(A):
     """
-    Draw network based on given adjacency matrix
+
+    :param A: Adjacency Matrix
+    :return: Graph with node 0 ... n based on adjacency matrix
     """
     G = nx.DiGraph()
     for i in range(len(A)):
         for j in range(len(A[i])):
             if (A[i, j]):
-                G.add_edge(i, j)
+                G.add_edge(i, j, weight=A[i, j])
+    return G
+
+
+def draw_adj_matrix(A, ax):
+    """
+    Draw network based on given adjacency matrix
+    """
+    G = create_G_from_adj_matrix(A)
     nx.draw_networkx(G, node_size=100, ax=ax, connectionstyle='arc3, rad = 0.1')
+    return G
 
 
 def plot_matrix_binary(M, ax, name=''):
@@ -293,3 +304,35 @@ def plot_matrix_binary(M, ax, name=''):
     im = ax.imshow(zeros, cmap=blue_map)
     ax.set_xticks([])
     ax.set_yticks([])
+
+
+def plot_condensated_graph(G, axs3, pos=None):
+    """
+
+    :param G: Graph which condensation should be drawn
+    :param axs3: 1 dim axs with at least 3 subplots locations
+    """
+
+    # Visualization of initial Graph
+    if pos is None:
+        pos_rand = nx.spring_layout(G)  #setting the positions with respect to G, not k.
+    else:
+        pos_rand = pos
+    nx.draw_networkx(G, pos=pos_rand, node_size=40, ax=axs3[0], connectionstyle='arc3, rad = 0.2', with_labels=False)
+
+    # Algorithm to find the condensed graph:
+    G_conden = nx.algorithms.components.condensation(G)
+
+    all_col = []
+    # We do the following for coloring scheme and saving that coloring scheme for the condensated graph
+    for u, node in G_conden.nodes(data=True):
+        sg = node['members']  # This contains a set of nodes from previous graph, that belongs to the condensated node
+        co = np.random.rand(1,3)
+        all_col.append(co)
+        nx.draw_networkx_nodes(G.subgraph(sg), pos=pos_rand, node_size=40, node_color=co, ax=axs3[1])
+        nx.draw_networkx_edges(G, pos=pos_rand, edgelist=G.edges(sg), edge_color=co, ax=axs3[1], connectionstyle='arc3, rad = 0.2')
+
+    nx.draw_networkx(G_conden, node_size=40, ax=axs3[2], node_color=all_col, connectionstyle='arc3, rad = 0.2', with_labels=False)
+    axs3[0].set_xlabel("Original Digraph")
+    axs3[1].set_xlabel("Strongly connected components")
+    axs3[2].set_xlabel("Condensation");
