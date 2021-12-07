@@ -14,6 +14,9 @@ def is_periodic(G):
     https://stackoverflow.com/questions/54030163/periodic-and-aperiodic-directed-graphs
     Own function to test, whether a given Graph is aperiodic:
     """
+    if not nx.is_strongly_connected(G):
+        print("G is not strongly connected, periodicity not defined.")
+        return False
     cycles = list(nx.algorithms.cycles.simple_cycles(G))
     cycles_sizes = [len(c) for c in cycles]  # Find all cycle sizes
     cycles_gcd = reduce(gcd, cycles_sizes)  # Find greatest common divisor of all cycle sizes
@@ -291,7 +294,8 @@ def draw_adj_matrix(A, ax):
     Draw network based on given adjacency matrix
     """
     G = create_G_from_adj_matrix(A)
-    nx.draw_networkx(G, node_size=100, ax=ax, connectionstyle='arc3, rad = 0.1')
+    pos = nx.drawing.layout.spring_layout(G, seed=4)
+    nx.draw_networkx(G, pos=pos, node_size=100, ax=ax, connectionstyle='arc3, rad = 0.1')
     return G
 
 
