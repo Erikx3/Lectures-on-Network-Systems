@@ -314,7 +314,7 @@ def plot_condensated_graph(G, axs3, pos=None):
     """
 
     :param G: Graph which condensation should be drawn
-    :param axs3: 1 dim axs with at least 3 subplots locations
+    :param axs3: 1 dim axis with at least 3 subplots locations
     """
 
     # Visualization of initial Graph
