@@ -5,7 +5,7 @@ These Jupyter Notebook scripts contain some examples, visualization and suppleme
 ![Book Cover Lectures on Network System](/img/bookcover.png?raw=true "Lectures on Network System")
 
 Book information:
-```math
+```
 Francesco Bullo
 Department of Mechanical Engineering
 Center for Control, Dynamical-Systems, and Computation
@@ -19,7 +19,7 @@ ISBN 978-1-986425-64-3
 ```
 
 Citation information
-```math
+```
 @Book{FB-LNS,
   author =    {F. Bullo},
   title =     {Lectures on Network Systems},
